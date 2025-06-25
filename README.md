@@ -15,6 +15,10 @@ FInsight is a modern, responsive expense tracker that leverages **machine learni
 
 ![image](https://github.com/user-attachments/assets/95f1eef6-fd1c-4be0-b92e-68099b1503b9)
 ![image](https://github.com/user-attachments/assets/f51a46a3-360d-4a3d-adfe-29e2a0571820)
+![image](https://github.com/user-attachments/assets/5a64e2c2-6dd3-4c63-8612-d21fb1944426)
+![image](https://github.com/user-attachments/assets/378e25d9-4052-4980-b01e-872359828f0a)
+![image](https://github.com/user-attachments/assets/ad372380-7932-4f53-8eaa-610d3fb522b4)
+
 
 ---
 
