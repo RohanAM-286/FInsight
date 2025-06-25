@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Insight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: white;
+    }
+
+    header {
+      padding: 20px 40px;
+      background-color: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    .dashboard {
+      padding: 30px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .card {
+      background-color: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #facc15;
+    }
+
+    .amount {
+      font-size: 2rem;
+      margin: 10px 0;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(to right, #4ade80, #22c55e);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .stats div {
+      text-align: center;
+    }
+
+    .text-green { color: #22c55e; }
+    .text-yellow { color: #facc15; }
+    .text-red { color: #f87171; }
+    .legend { font-size: 0.85rem; margin-top: 10px; color: #cbd5e1; }
+
+    canvas { background-color: #0f172a; }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tooltip {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Hello! <span id="date"></span></h2>
+</header>
+
+<section class="dashboard">
+
+  <!-- Spending Overview -->
+  <div class="card">
+    <h3>This Month's Spending</h3>
+    <div class="amount" id="spendingAmount">0.00</div>
+    <div class="bar"></div>
+    <p>Budget Health: <span class="text-green" id="budgetStatus">Waiting...</span></p>
+  </div>
+
+  <!-- Prediction Widgets -->
+  <div class="card">
+    <h3>🔍 ML Prediction Stats</h3>
+    <p>Total Predictions: <span id="totalPredictions">0</span></p>
+    <p>Accuracy Rate: <span id="accuracyRate">0%</span></p>
+    <p>Last Delta: <span id="lastDelta">0.00</span></p>
+  </div>
+
+  <!-- Category Donut -->
+  <div class="card">
+    <h3>📊 Top Spending Categories</h3>
+    <canvas id="donutChart" width="300" height="300"></canvas>
+    <div class="legend" id="categoryLegend">Waiting...</div>
+  </div>
+
+  <!-- Spend Prediction Trend -->
+  <div class="card" style="grid-column: span 2;">
+    <h3>Spend Prediction <span class="tooltip">🤖 ML vs Actual Comparison</span></h3>
+    <p>Actual vs ML-Predicted Spending</p>
+    <canvas id="lineChart" width="600" height="300"></canvas>
+    <div class="stats">
+      <div>
+        💳<br>
+        <span class="text-green" id="actualSpent">0.00</span><br>
+        Last Actual
+      </div>
+      <div>
+        🤖<br>
+        <span class="text-yellow" id="predictedSpent">0.00</span><br>
+        Last Predicted
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  document.getElementById("date").innerText = new Date().toLocaleDateString(undefined, {
+    weekday: "long", year: "numeric", month: "long", day: "numeric"
+  });
+
+  // Donut Chart
+  const donutChart = new Chart(document.getElementById("donutChart"), {
+    type: 'doughnut',
+    data: {
+      labels: [],
+      datasets: [{
+        data: [],
+        backgroundColor: ["#facc15", "#fbbf24", "#4ade80", "#60a5fa", "#f87171"]
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Line Chart
+  const lineChart = new Chart(document.getElementById("lineChart"), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Actual Spending',
+          data: [],
+          borderColor: '#22c55e',
+          backgroundColor: 'transparent',
+          tension: 0.4
+        },
+        {
+          label: 'Predicted Spending',
+          data: [],
+          borderColor: '#facc15',
+          backgroundColor: 'transparent',
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      scales: {
+        y: { ticks: { color: "#94a3b8" } },
+        x: { ticks: { color: "#94a3b8" } }
+      },
+      plugins: {
+        legend: { labels: { color: "#e2e8f0" } },
+        tooltip: {
+          callbacks: {
+            label: (context) => `${context.dataset.label}: $${context.formattedValue}`
+          }
+        }
+      }
+    }
+  });
+
+  // Real-time Fetch and Update
+  async function updateDashboardFromAPI() {
+    try {
+      const res = await fetch("http://localhost:5000/api/dashboard-data");
+      const data = await res.json();
+
+      document.getElementById("spendingAmount").innerText = `$${data.spending.toFixed(2)}`;
+      document.getElementById("budgetStatus").innerText = data.budgetStatus;
+
+      donutChart.data.labels = data.categories.map(c => c.name);
+      donutChart.data.datasets[0].data = data.categories.map(c => c.percent);
+      donutChart.update();
+
+      document.getElementById("categoryLegend").innerHTML =
+        data.categories.map(c => `🟡 ${c.name} - ${c.percent}%`).join("<br>");
+
+      lineChart.data.labels = data.dates;
+      lineChart.data.datasets[0].data = data.actualSpending;
+      lineChart.data.datasets[1].data = data.predictedSpending;
+      lineChart.update();
+
+      // Stats
+      const lastActual = data.actualSpending.at(-1);
+      const lastPredicted = data.predictedSpending.at(-1);
+      document.getElementById("actualSpent").innerText = `$${lastActual.toFixed(2)}`;
+      document.getElementById("predictedSpent").innerText = `$${lastPredicted.toFixed(2)}`;
+
+      // ML Stats
+      document.getElementById("totalPredictions").innerText = data.predictionStats.totalPredictions;
+      document.getElementById("accuracyRate").innerText = `${data.predictionStats.accuracyRate}%`;
+      document.getElementById("lasttransaction").innerText = data.predictionStats.lastDelta;
+    } catch (err) {
+      console.error("Failed to load dashboard data:", err);
+    }
+  }
+
+  updateDashboardFromAPI();
+</script>
+
+</body>
+</html>

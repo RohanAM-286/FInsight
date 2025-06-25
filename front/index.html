@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FInsight - Expense Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <style>
+    .typing::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    .typewriter {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #111d3a;
+      animation: typing 3s steps(40) 1s 1 normal both;
+    }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center px-10 py-6 bg-white shadow-md">
+    <div>
+      <h1 class="text-xl font-bold">Rohan A M</h1>
+      <span class="text-sm text-gray-500">Full Stack Developer</span>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="flex flex-col md:flex-row items-center justify-between px-10 py-16 gap-12 bg-gradient-to-br from-blue-100 to-indigo-100">
+    <div class="max-w-xl" data-aos="fade-right">
+      <h2 class="text-2xl font-semibold text-indigo-700 mb-2">Welcome to</h2>
+      <h1 class="text-5xl font-bold text-gray-800 typewriter typing mb-6">FInsight Expense Tracker</h1>
+
+      <div class="flex gap-4 mb-6">
+        <a href="login.html" class="bg-indigo-600 text-white px-6 py-3 rounded-full shadow hover:bg-indigo-700 transition">Login</a>
+        <a href="register.html" class="border-2 border-indigo-600 text-indigo-600 px-6 py-3 rounded-full hover:bg-indigo-100 transition">Register</a>
+      </div>
+
+      <p class="text-gray-700 leading-relaxed">
+        Track your expenses in real-time, predict spending patterns, and analyze your financial habits with intelligent insights — all in one place.
+      </p>
+    </div>
+
+    <div data-aos="zoom-in">
+      <img src="AI.jpg" alt="AI Expense Tracker" class="rounded-2xl shadow-lg w-full max-w-md" />
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="px-10 py-20 bg-white" data-aos="fade-up">
+    <h2 class="text-3xl font-bold text-center mb-10">Why Choose FInsight?</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-indigo-50 p-6 rounded-2xl shadow-lg transform hover:scale-105 transition" data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-2 text-indigo-700">Smart Categorization</h3>
+        <p>Automatically predict the category of each expense using Machine Learning.</p>
+      </div>
+      <div class="bg-indigo-50 p-6 rounded-2xl shadow-lg transform hover:scale-105 transition" data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-xl font-bold mb-2 text-indigo-700">Insightful Reports</h3>
+        <p>Visual dashboards with pie charts and bar graphs to track your spending habits.</p>
+      </div>
+      <div class="bg-indigo-50 p-6 rounded-2xl shadow-lg transform hover:scale-105 transition" data-aos="fade-up" data-aos-delay="300">
+        <h3 class="text-xl font-bold mb-2 text-indigo-700">Budget Goals</h3>
+        <p>Set budgets and get alerts when you’re close to overspending in any category.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 bg-indigo-600 text-white mt-12">
+    Built with 💙 by Rohan | FInsight 2025
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init({ duration: 1000 });</script>
+</body>
+</html>
